@@ -1,0 +1,90 @@
+# Amazon-inspired Streamlit Theme
+# To use: copy this content to .streamlit/config.toml or reference via base
+
+[theme]
+# Core Amazon colors
+primaryColor = "#FF9900"             # Amazon orange - primary buttons, links, accents
+backgroundColor = "#FFFFFF"          # Clean white background
+secondaryBackgroundColor = "#F7F8F8" # Light gray for cards and secondary areas
+textColor = "#0F1111"                # Near-black text (Amazon's body text)
+linkColor = "#007185"                # Amazon teal for links
+borderColor = "#D5D9D9"              # Light gray borders
+
+# Code styling
+codeBackgroundColor = "#F7F8F8"
+codeTextColor = "#0F1111"
+
+# Widget styling
+showWidgetBorder = true
+showSidebarBorder = true
+baseRadius = "12pxpx"       # Rounded corners like Amazon buttons
+buttonRadius = "12px"
+
+# Typography - Amazon uses their proprietary "Amazon Ember" but we use a similar sans-serif
+font = "'Open Sans':https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700&display=swap"
+headingFont = "'Open Sans':https://fonts.googleapis.com/css2?family=Open+Sans:wght@600;700;800&display=swap"
+codeFont = "'Source Code Pro':https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;500&display=swap"
+
+baseFontSize = 17
+baseFontWeight = 400
+codeFontSize = "13px"
+codeFontWeight = 400
+headingFontSizes = ["28px", "24px", "20px", "16px", "14px", "12px"]
+headingFontWeights = [700, 700, 600, 600, 500, 500]
+linkUnderline = false
+
+# Semantic colors matching Amazon's UI
+blueColor = "#007185"   # Amazon teal/blue for links and info
+greenColor = "#067D62"  # Success green (Prime green variant)
+yellowColor = "#FFD814" # Amazon yellow (Buy button)
+orangeColor = "#FF9900" # Amazon orange
+redColor = "#B12704"    # Amazon price red / error
+violetColor = "#7B5AA6" # Supporting purple
+grayColor = "#565959"   # Secondary text gray
+
+# Green with background variants (for success states)
+greenBackgroundColor = "#E7F4E4"
+greenTextColor = "#067D62"
+
+# Red with background variants (for errors/alerts)
+redBackgroundColor = "#FFECEA"
+redTextColor = "#B12704"
+
+# Chart colors - Amazon-inspired palette
+chartCategoricalColors = [
+    "#FF9900",
+    "#232F3E",
+    "#007185",
+    "#067D62",
+    "#FFD814",
+    "#B12704",
+    "#565959",
+]
+chartSequentialColors = [
+    "#FFF8E7",
+    "#FFE8B3",
+    "#FFD580",
+    "#FFC24D",
+    "#FFAF1A",
+    "#FF9900",
+    "#E68A00",
+    "#CC7A00",
+    "#B36B00",
+    "#995C00",
+]
+
+# Dataframe styling
+dataframeBorderColor = "#D5D9D9"
+dataframeHeaderBackgroundColor = "#F7F8F8"
+
+# Sidebar - Amazon dark navy theme
+[theme.sidebar]
+backgroundColor = "#232F3E"          # Amazon dark navy
+secondaryBackgroundColor = "#37475A" # Lighter navy for hover/active
+codeBackgroundColor = "#37475A"
+textColor = "#FFFFFF"                # White text on dark
+borderColor = "#37475A"
+primaryColor = "#FF9900"             # Orange accents in sidebar
+
+[client]
+showSidebarNavigation = false

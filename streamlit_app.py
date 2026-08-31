@@ -47,10 +47,12 @@ def require_password() -> None:
         return
 
     st.title("Staff training reminders")
-    st.caption("Administrator sign-in")
-    with st.form("login"):
-        password = st.text_input("Password", type="password")
-        submitted = st.form_submit_button("Sign in", type="primary")
+    _, login_column, _ = st.columns([1, 1.2, 1])
+    with login_column:
+        st.caption("Administrator sign-in")
+        with st.form("login", border=False):
+            password = st.text_input("Password", type="password")
+            submitted = st.form_submit_button("Sign in", type="primary")
     if submitted:
         if password == expected:
             st.session_state.authenticated = True

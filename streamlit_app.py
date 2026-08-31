@@ -132,7 +132,7 @@ def parse_training_export(df: pd.DataFrame) -> tuple[pd.DataFrame, list[str]]:
 
 def load_master_courses(course_names: list[str]) -> pd.DataFrame:
     """Load the editable course/URL list and add newly seen TeamNet courses."""
-    columns = ["Course name", "Course URL", "Due every (years)"]
+    columns = ["Course name", "Course URL", "Due every (years)", "Course Duration (minutes)"]
     if MASTER_COURSES_PATH.exists():
         saved = pd.read_csv(MASTER_COURSES_PATH, dtype=str, keep_default_na=False)
         saved.columns = [clean_text(column) for column in saved.columns]
@@ -140,11 +140,13 @@ def load_master_courses(course_names: list[str]) -> pd.DataFrame:
         url_column = next((column for column in saved.columns if "url" in column.casefold() or "link" in column.casefold()), None)
         if name_column:
             interval_column = next((column for column in saved.columns if "due every" in column.casefold() or "frequency" in column.casefold() or "interval" in column.casefold()), None)
+            duration_column = next((column for column in saved.columns if "duration" in column.casefold() or "minutes" in column.casefold()), None)
             master = pd.DataFrame(
                 {
                     "Course name": saved[name_column].map(clean_text),
                     "Course URL": saved[url_column].map(clean_text) if url_column else "",
                     "Due every (years)": saved[interval_column].map(clean_text) if interval_column else "",
+                    "Course Duration (minutes)": saved[duration_column].map(clean_text) if duration_column else "",
                 }
             )
         else:
@@ -156,7 +158,7 @@ def load_master_courses(course_names: list[str]) -> pd.DataFrame:
     additions = [name for name in course_names if name.casefold() not in existing]
     if additions:
         master = pd.concat(
-            [master, pd.DataFrame({"Course name": additions, "Course URL": [""] * len(additions), "Due every (years)": [""] * len(additions)})],
+            [master, pd.DataFrame({"Course name": additions, "Course URL": [""] * len(additions), "Due every (years)": [""] * len(additions), "Course Duration (minutes)": [""] * len(additions)})],
             ignore_index=True,
         )
     return master[columns].drop_duplicates(subset=["Course name"], keep="first")
@@ -267,7 +269,7 @@ def build_reminders(training: pd.DataFrame, emails: pd.DataFrame, master_courses
     ].copy()
     reminders = due.merge(emails, on="Staff member", how="left")
     reminders = reminders.merge(
-        master_courses[["Course name", "Course URL"]],
+        master_courses[["Course name", "Course URL", "Course Duration (minutes)"]],
         left_on="Training course",
         right_on="Course name",
         how="left",
@@ -356,10 +358,15 @@ def reminder_copy(staff_name: str, rows: pd.DataFrame) -> tuple[str, str, str]:
     safe_name = html_module.escape(staff_name)
     training_rows = []
     text_lines = [f"Hello {staff_name}", "", "The following mandatory training is overdue or due soon:", ""]
-    for _, row in rows.iterrows():
+    ordered_rows = rows.copy()
+    ordered_rows["_duration_sort"] = pd.to_numeric(ordered_rows["Course Duration (minutes)"], errors="coerce")
+    ordered_rows = ordered_rows.sort_values("_duration_sort", na_position="last")
+    for _, row in ordered_rows.iterrows():
         due_label = row["Raw status"]
         if row["Due date"]:
             due_label = f"{row['Due date'].strftime('%d/%m/%Y')} ({row['Status'].lower()})"
+        duration = pd.to_numeric(row.get("Course Duration (minutes)"), errors="coerce")
+        duration_label = f"{int(duration)} minutes" if not pd.isna(duration) else ""
         course_name = html_module.escape(row["Training course"])
         course_url = clean_text(row.get("Course URL", ""))
         if course_url.startswith(("https://", "http://")):
@@ -368,8 +375,10 @@ def reminder_copy(staff_name: str, rows: pd.DataFrame) -> tuple[str, str, str]:
         else:
             course_html = f"<strong>{course_name}</strong>"
             text_course = row["Training course"]
-        training_rows.append(f'<li style="margin:8px 0;color:#334155;">{course_html} — {html_module.escape(due_label)}</li>')
-        text_lines.append(f"- {text_course}: {due_label}")
+        duration_html = f' <span style="color:#64748b;">({duration_label})</span>' if duration_label else ""
+        duration_text = f" ({duration_label})" if duration_label else ""
+        training_rows.append(f'<li style="margin:8px 0;color:#334155;">{course_html}{duration_html} — {html_module.escape(due_label)}</li>')
+        text_lines.append(f"- {text_course}{duration_text}: {due_label}")
     immunisation_html, immunisation_text = immunisation_copy(rows.iloc[0])
     text_lines.extend(["", "Immunisation records:", immunisation_text, "", "Please complete the training as soon as possible.", "", "Kind regards,", "Stanhope Staff Training"])
     html_body = f'''<style>a, a:visited {{ color:#cc808e !important; }}</style><div style="background:#f1f5f9;padding:32px 16px;font-family:Arial,sans-serif;color:#0f172a;">
@@ -434,6 +443,7 @@ with st.expander("Training course master list", icon=":material/menu_book:", exp
             "Course name": st.column_config.TextColumn("Course name", required=True),
             "Course URL": st.column_config.LinkColumn("Course URL", help="Optional link staff can use to complete the course."),
             "Due every (years)": st.column_config.NumberColumn("Due every (years)", min_value=0, step=1, help="How often this course must be completed, in years."),
+            "Course Duration (minutes)": st.column_config.NumberColumn("Course Duration (minutes)", min_value=0, step=5, help="Expected time needed to complete the course."),
         },
     )
     if st.button("Save course master list", icon=":material/save:"):
@@ -441,6 +451,7 @@ with st.expander("Training course master list", icon=":material/menu_book:", exp
         to_save["Course name"] = to_save["Course name"].map(clean_text)
         to_save["Course URL"] = to_save["Course URL"].map(clean_text)
         to_save["Due every (years)"] = pd.to_numeric(to_save["Due every (years)"], errors="coerce")
+        to_save["Course Duration (minutes)"] = pd.to_numeric(to_save["Course Duration (minutes)"], errors="coerce")
         to_save = to_save[to_save["Course name"].ne("")].drop_duplicates(subset=["Course name"], keep="first")
         to_save.to_csv(MASTER_COURSES_PATH, index=False)
         st.success(f"Saved {len(to_save)} training courses to {MASTER_COURSES_PATH}.")

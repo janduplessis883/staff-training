@@ -1,39 +1,39 @@
-Course name,Course URL,Due every (years)
-BLS - Admin,,
-BLS - Clinical Staff,,
-BLS e-learning,https://www.nwllearning.nhs.uk/course/view.php?id=86,1.0
-Cervical smear taker certs,,
-Chaperones and Consent,https://www.nwllearning.nhs.uk/course/view.php?id=261,5.0
-Conflict Resolution,https://www.nwllearning.nhs.uk/course/view.php?id=39,3.0
-CRM Motivational Interview training,,
-Data Security Awareness - Level 1,https://www.nwllearning.nhs.uk/course/view.php?id=132,1.0
-"Equality, Diversity and Human Rights",https://www.nwllearning.nhs.uk/course/view.php?id=130,3.0
-Fire Safety,https://www.nwllearning.nhs.uk/course/view.php?id=43,2.0
-"Health, Safety and Welfare - Level 1",https://www.nwllearning.nhs.uk/course/view.php?id=44,3.0
-Immunisations,,
-Inactivated flu vaccines:self-assessment,,
-Infection Prevention and Control,https://www.nwllearning.nhs.uk/course/view.php?id=45,3.0
-Live flu vaccine: self-assessment,,
-mental capacity act,https://www.nwllearning.nhs.uk/course/view.php?id=98,
-Minor surgery accreditation,,
-Moving and Handling,https://www.nwllearning.nhs.uk/course/view.php?id=48,2.0
-Oliver McGowan Learning Disability and Autism Tier 1 (f2f one day course),https://www.nwllearning.nhs.uk/course/view.php?id=324,
-Oliver McGowan Learning Disability and Autism Tier 2,,
-Other Nurse Certificates,,
-Preventing Radicalisation - Basic Prevent Awareness,https://www.nwllearning.nhs.uk/course/view.php?id=46,3.0
-Respiratory Assessment,,
-Resus,,
-RSV,,
-Safeguarding Adults - Level 1,https://www.nwllearning.nhs.uk/course/view.php?id=30,1.0
-Safeguarding Adults - Level 2,https://www.nwllearning.nhs.uk/course/view.php?id=65,1.0
-Safeguarding Adults - Level 3,,
-Safeguarding Children - Level 1,https://www.nwllearning.nhs.uk/course/view.php?id=60,1.0
-Safeguarding Children - Level 2,https://www.nwllearning.nhs.uk/course/view.php?id=53,1.0
-Safeguarding Children - Level 3,,
-Sepsis 2 - Adult Sepsis,https://www.nwllearning.nhs.uk/enrol/index.php?id=153,1.0
-Sepsis 3 - Childhood sepsis,https://www.nwllearning.nhs.uk/enrol/index.php?id=154,1.0
-Sepsis Awareness - Level 1,https://www.nwllearning.nhs.uk/course/view.php?id=152,1.0
-Sexual health,,1.0
-Shared Decision Making - clinical staff,https://www.nwllearning.nhs.uk/course/view.php?id=273,3.0
-Travel health update,,
-Understanding sexual misconduct in the workplace,https://www.nwllearning.nhs.uk/enrol/index.php?id=408,3.0
+Course name,Course URL,Due every (years),Course Duration (minutes)
+BLS - Admin,,,
+BLS - Clinical Staff,,,
+BLS e-learning,https://www.nwllearning.nhs.uk/course/view.php?id=86,1.0,20.0
+Cervical smear taker certs,,,
+Chaperones and Consent,https://www.nwllearning.nhs.uk/course/view.php?id=261,5.0,20.0
+Conflict Resolution,https://www.nwllearning.nhs.uk/course/view.php?id=39,3.0,40.0
+CRM Motivational Interview training,https://portal.e-lfh.org.uk/Component/Details/592248,,
+Data Security Awareness - Level 1,https://www.nwllearning.nhs.uk/course/view.php?id=132,1.0,60.0
+"Equality, Diversity and Human Rights",https://www.nwllearning.nhs.uk/course/view.php?id=130,3.0,30.0
+Fire Safety,https://www.nwllearning.nhs.uk/course/view.php?id=43,2.0,30.0
+"Health, Safety and Welfare - Level 1",https://www.nwllearning.nhs.uk/course/view.php?id=44,3.0,30.0
+Immunisations,,,
+Inactivated flu vaccines:self-assessment,,,
+Infection Prevention and Control,https://www.nwllearning.nhs.uk/course/view.php?id=45,3.0,30.0
+Live flu vaccine: self-assessment,,,
+mental capacity act,https://www.nwllearning.nhs.uk/course/view.php?id=98,,210.0
+Minor surgery accreditation,,,
+Moving and Handling,https://www.nwllearning.nhs.uk/course/view.php?id=48,2.0,40.0
+Oliver McGowan Learning Disability and Autism Tier 1 (f2f one day course),https://www.nwllearning.nhs.uk/course/view.php?id=324,3.0,90.0
+Oliver McGowan Learning Disability and Autism Tier 2,,,
+Other Nurse Certificates,,,
+Preventing Radicalisation - Basic Prevent Awareness,https://www.nwllearning.nhs.uk/course/view.php?id=46,3.0,35.0
+Respiratory Assessment,,,
+Resus,,,
+RSV,,,
+Safeguarding Adults - Level 1,https://www.nwllearning.nhs.uk/course/view.php?id=30,1.0,40.0
+Safeguarding Adults - Level 2,https://www.nwllearning.nhs.uk/course/view.php?id=65,1.0,40.0
+Safeguarding Adults - Level 3,,,
+Safeguarding Children - Level 1,https://www.nwllearning.nhs.uk/course/view.php?id=60,1.0,30.0
+Safeguarding Children - Level 2,https://www.nwllearning.nhs.uk/course/view.php?id=53,1.0,35.0
+Safeguarding Children - Level 3,,,
+Sepsis 2 - Adult Sepsis,https://www.nwllearning.nhs.uk/enrol/index.php?id=153,1.0,30.0
+Sepsis 3 - Childhood sepsis,https://www.nwllearning.nhs.uk/enrol/index.php?id=154,1.0,30.0
+Sepsis Awareness - Level 1,https://www.nwllearning.nhs.uk/course/view.php?id=152,1.0,30.0
+Sexual health,,,
+Shared Decision Making - clinical staff,https://www.nwllearning.nhs.uk/course/view.php?id=273,3.0,40.0
+Travel health update,,,
+Understanding sexual misconduct in the workplace,https://www.nwllearning.nhs.uk/enrol/index.php?id=408,3.0,35.0

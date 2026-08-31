@@ -311,8 +311,9 @@ def send_email(to: str, subject: str, html_body: str, text_body: str) -> tuple[b
 
 def immunisation_copy(row: pd.Series) -> tuple[str, str]:
     """Return an HTML block and text fallback for one staff member's records."""
-    is_clinical = "clinical" in clean_text(row.get("Team", "")).casefold()
-    required_fields = IMMUNISATION_FIELDS[:-1] if is_clinical else [field for field in IMMUNISATION_FIELDS[:-1] if field != "Hep B"]
+    team = clean_text(row.get("Team", "")).casefold()
+    hep_b_required = not any(role in team for role in ("admin", "receptionist", "manager"))
+    required_fields = IMMUNISATION_FIELDS[:-1] if hep_b_required else [field for field in IMMUNISATION_FIELDS[:-1] if field != "Hep B"]
     complete = all(normalize_bool(row.get(field, "")) for field in required_fields)
     free_text = clean_text(row.get("Imms Free Text", ""))
     if complete:
@@ -331,7 +332,7 @@ def immunisation_copy(row: pd.Series) -> tuple[str, str]:
     cells = []
     text_lines = []
     for field in IMMUNISATION_FIELDS[:-1]:
-        if field == "Hep B" and not is_clinical:
+        if field == "Hep B" and not hep_b_required:
             label, value, colour = "Hep B", "Not required for this role", "#64748b"
         else:
             present = normalize_bool(row.get(field, ""))
@@ -421,28 +422,28 @@ except Exception as error:  # noqa: BLE001
     st.error(f"Could not load the staff directory from Notion: {error}")
     st.stop()
 
-st.subheader("Training course master list")
-st.caption("Maintain one course URL per row. New courses from the uploaded TeamNet matrix are added automatically.")
-master_courses = load_master_courses(courses)
-edited_master_courses = st.data_editor(
-    master_courses,
-    num_rows="dynamic",
-    hide_index=True,
-    key="master_courses_editor",
-    column_config={
-        "Course name": st.column_config.TextColumn("Course name", required=True),
-        "Course URL": st.column_config.LinkColumn("Course URL", help="Optional link staff can use to complete the course."),
-        "Due every (years)": st.column_config.NumberColumn("Due every (years)", min_value=0, step=1, help="How often this course must be completed, in years."),
-    },
-)
-if st.button("Save course master list", icon=":material/save:"):
-    to_save = edited_master_courses.copy()
-    to_save["Course name"] = to_save["Course name"].map(clean_text)
-    to_save["Course URL"] = to_save["Course URL"].map(clean_text)
-    to_save["Due every (years)"] = pd.to_numeric(to_save["Due every (years)"], errors="coerce")
-    to_save = to_save[to_save["Course name"].ne("")].drop_duplicates(subset=["Course name"], keep="first")
-    to_save.to_csv(MASTER_COURSES_PATH, index=False)
-    st.success(f"Saved {len(to_save)} training courses to {MASTER_COURSES_PATH}.")
+with st.expander("Training course master list", icon=":material/menu_book:", expanded=False):
+    st.caption("Maintain one course URL per row. New courses from the uploaded TeamNet matrix are added automatically.")
+    master_courses = load_master_courses(courses)
+    edited_master_courses = st.data_editor(
+        master_courses,
+        num_rows="dynamic",
+        hide_index=True,
+        key="master_courses_editor",
+        column_config={
+            "Course name": st.column_config.TextColumn("Course name", required=True),
+            "Course URL": st.column_config.LinkColumn("Course URL", help="Optional link staff can use to complete the course."),
+            "Due every (years)": st.column_config.NumberColumn("Due every (years)", min_value=0, step=1, help="How often this course must be completed, in years."),
+        },
+    )
+    if st.button("Save course master list", icon=":material/save:"):
+        to_save = edited_master_courses.copy()
+        to_save["Course name"] = to_save["Course name"].map(clean_text)
+        to_save["Course URL"] = to_save["Course URL"].map(clean_text)
+        to_save["Due every (years)"] = pd.to_numeric(to_save["Due every (years)"], errors="coerce")
+        to_save = to_save[to_save["Course name"].ne("")].drop_duplicates(subset=["Course name"], keep="first")
+        to_save.to_csv(MASTER_COURSES_PATH, index=False)
+        st.success(f"Saved {len(to_save)} training courses to {MASTER_COURSES_PATH}.")
 
 with st.expander("Inspect full Notion staff directory", expanded=False):
     st.caption(f"{len(directory)} rows × {len(directory.columns)} columns returned from the configured Notion data source.")

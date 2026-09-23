@@ -353,11 +353,16 @@ def normalize_bool(value: object) -> bool:
     return clean_text(value).casefold() in {"true", "yes", "y", "1", "checked", "complete", "on"}
 
 
-def reminder_copy(staff_name: str, rows: pd.DataFrame) -> tuple[str, str, str]:
+def reminder_copy(staff_name: str, rows: pd.DataFrame, custom_message: str = "") -> tuple[str, str, str]:
     subject = "Action required: staff training reminder"
     safe_name = html_module.escape(staff_name)
+    clean_custom_message = custom_message.strip()
+    safe_custom_message = html_module.escape(clean_custom_message).replace("\n", "<br>")
     training_rows = []
-    text_lines = [f"Hello {staff_name}", "", "The following mandatory training is overdue or due soon:", ""]
+    text_lines = [f"Hello {staff_name},"]
+    if clean_custom_message:
+        text_lines.extend(["", clean_custom_message])
+    text_lines.extend(["", "The following mandatory training is overdue or due soon:", ""])
     ordered_rows = rows.copy()
     ordered_rows["_duration_sort"] = pd.to_numeric(ordered_rows["Course Duration (minutes)"], errors="coerce")
     ordered_rows = ordered_rows.sort_values("_duration_sort", na_position="last")
@@ -384,7 +389,7 @@ def reminder_copy(staff_name: str, rows: pd.DataFrame) -> tuple[str, str, str]:
     html_body = f'''<style>a, a:visited {{ color:#cc808e !important; }}</style><div style="background:#f1f5f9;padding:32px 16px;font-family:Arial,sans-serif;color:#0f172a;">
 <div style="max-width:620px;margin:0 auto;background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 4px 18px rgba(15,23,42,.08);">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td bgcolor="#b84d55" style="background-color:#b84d55;padding:28px 32px;color:#ffffff;"><div style="font-size:12px;letter-spacing:1.5px;text-transform:uppercase;opacity:.85;">Stanhope Staff Training</div><h1 style="margin:10px 0 0;font-size:25px;line-height:1.2;color:#ffffff;">Training reminder</h1></td></tr></table>
-<div style="padding:28px 32px;"><p style="font-size:16px;">Hello {safe_name},</p><p style="color:#475569;line-height:1.6;">The following mandatory training is overdue or due soon:</p>
+<div style="padding:28px 32px;"><p style="font-size:16px;">Hello {safe_name},</p>{f'<p style="color:#475569;line-height:1.6;">{safe_custom_message}</p>' if clean_custom_message else ''}<p style="color:#475569;line-height:1.6;">The following mandatory training is overdue or due soon:</p>
 <ul style="padding-left:20px;line-height:1.5;">{"".join(training_rows)}</ul>{immunisation_html}
 <p style="color:#475569;line-height:1.6;">Please complete the training as soon as possible.</p><p style="margin-top:28px;">Kind regards,<br><strong>Stanhope Staff Training</strong></p></div></div></div>'''
     return subject, html_body, "\n".join(text_lines)
@@ -503,6 +508,11 @@ if not needs_review.empty:
 
 st.subheader("Send reminders")
 st.caption("Each staff member receives one email containing all of their overdue or upcoming training.")
+custom_message = st.text_area(
+    "Optional custom message",
+    placeholder="Add a message to include after the greeting and before the training details.",
+    help="This message will be included in every reminder email you send in this batch.",
+)
 send_scope = st.segmented_control("Send to", ["All staff", "Selected staff"], default="All staff")
 selected_staff: list[str] = []
 if send_scope == "Selected staff":
@@ -523,7 +533,7 @@ if st.button("Send reminders", type="primary", icon=":material/send:", disabled=
     if test_mode:
         staff_groups = staff_groups[:5]
     for staff_name, rows in staff_groups:
-        subject, html_body, text_body = reminder_copy(staff_name, rows)
+        subject, html_body, text_body = reminder_copy(staff_name, rows, custom_message)
         email = "jan.duplessis@nhs.net" if test_mode else rows["Email"].iloc[0]
         success, detail = send_email(email, subject, html_body, text_body)
         results.append({"Staff member": staff_name, "Email": email, "Result": "Sent" if success else "Failed", "Details": detail})
